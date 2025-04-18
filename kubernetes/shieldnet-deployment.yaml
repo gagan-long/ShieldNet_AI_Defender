@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shieldnet-defender
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shieldnet
+  template:
+    metadata:
+      labels:
+        app: shieldnet
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: shieldnet
+        image: yourusername/shieldnet-ai-defender:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        volumeMounts:
+        - name: models
+          mountPath: /app/models
+          readOnly: true
+
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: ai-models-pvc

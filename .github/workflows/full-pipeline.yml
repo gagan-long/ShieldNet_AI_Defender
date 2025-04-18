@@ -1,0 +1,35 @@
+name: ShieldNet Full Deployment
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: anchore/scan-action@v3
+      with:
+        image: shieldnet-ai-defender
+        fail-build: true
+    - uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: shieldnet-ai-defender
+        severity: 'CRITICAL,HIGH'
+        exit-code: '1'
+    
+  confidential-compute:
+    needs: security-scan
+    runs-on: sgx-enabled-runner
+    steps:
+    - uses: actions/checkout@v4
+    - run: ./scripts/sgx_setup.sh
+    - run: docker build -f Dockerfile.sgx -t shieldnet-sgx .
+    - run: kubeclt apply -f deploy/full-deployment.yaml
+    
+  chaos-test:
+    needs: confidential-compute
+    runs-on: ub

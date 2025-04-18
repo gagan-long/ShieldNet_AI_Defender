@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  shieldnet:
+    image: yourusername/shieldnet-ai-defender:latest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - shieldnet-internal
+    environment:
+      - MISP_API_KEY=${MISP_API_KEY}
+      - THREAT_FEEDS=CIRCL OSINT Feed,MISP Project Feed
+    volumes:
+      - ai-models:/app/models
+      - logs:/app/logs
+
+  monitoring:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+networks:
+  shieldnet-internal:
+    driver: bridge
+    internal: true
+
+volumes:
+  ai-models:
+  logs:

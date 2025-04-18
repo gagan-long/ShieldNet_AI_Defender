@@ -1,0 +1,9 @@
+injection:
+  - "ignore previous instructions"
+  - "system:"
+  - "sudo"
+  - "root access"
+iocs:
+  malware:
+    - "powershell -nop -w hidden -e"
+    - "certutil -urlcache"

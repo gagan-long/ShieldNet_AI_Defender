@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shieldnet-full
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: shieldnet
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: shieldnet
+        image: yourregistry/shieldnet-sgx:v2.1
+        securityContext:
+          capabilities:
+            drop: ["ALL"]
+          readOnlyRootFilesystem: true
+        env:
+        - name: MISP_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: shieldnet-secrets
+              key: misp-key
+        volumeMounts:
+        - name: models
+          mountPath: /app/models
+          readOnly: true
+        - name: audit-logs
+          mountPath: /app/logs
+      - name: opa
+        image: openpolicyagent/opa:latest
+        args: ["run", "--server"]
+      - name: falco
+        image: falcosecurity/falco:latest
+        volumeMounts:
+        - name: falco-rules
+          mountPath: /etc/falco/rules.d
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: encrypted-models
+      - name: falco-rules
+        configMap:
+          name: falco-rules
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: shieldnet-monitor
+spec:
+  serviceMonitorSelector:
+    matchLabels:
+      app: shieldnet
+  resources:
+    requests:
+      memory: 8Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: falco-rules
+data:
+  ai-rules.yaml: |
+    - rule: Model Tampering
+      desc: Detect unauthorized model modifications
+      condition: >
+        container.image contains "shieldnet" and 
+        fd.name contains ".h5" and 
+        open_write
+      output: >
+        Unauthorized model modification (user=%user.name)
+      priority: CRITICAL

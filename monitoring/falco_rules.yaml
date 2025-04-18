@@ -1,0 +1,19 @@
+- rule: Unauthorized Model Access
+  desc: Detect attempts to modify AI model files
+  condition: >
+    container.image contains "shieldnet" and 
+    (fd.name contains ".h5" or fd.name contains ".pkl") and 
+    (open_write or modify)
+  output: >
+    Unauthorized model modification detected (user=%user.name container=%container.name)
+  priority: CRITICAL
+
+- rule: Suspicious Prompt Injection
+  desc: Detect LLM prompt injection patterns
+  condition: >
+    container.image contains "shieldnet" and 
+    evt.type=execve and 
+    proc.args contains "ignore previous instructions"
+  output: >
+    Potential prompt injection detected (command=%proc.cmdline)
+  priority: WARNING

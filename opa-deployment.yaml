@@ -1,0 +1,13 @@
+# opa-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: opa
+        image: openpolicyagent/opa:latest
+        args: ["run", "--server"]
