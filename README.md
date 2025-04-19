@@ -274,3 +274,171 @@ This version:
 ✅ Provides actionable deployment steps
 ✅ Maintains compliance documentation
 ✅ Includes maintenance requirements
+
+
+
+
+
+=============================================================
+
+Yes, you can definitely run **ShieldNet AI Defender** locally for development, testing, and evaluation purposes before deploying it to production or cloud environments. Here’s how you can set it up and run it on your local machine:
+
+---
+
+## Running ShieldNet AI Defender Locally: Step-by-Step Guide
+
+### 1. **Prerequisites**
+
+- **Operating System:** Windows, Linux, or macOS
+- **Python 3.9+** installed
+- **Docker** installed and running (for containerized components)
+- **Git** installed (to clone the repo)
+- Optional but recommended: **Minikube** or **Docker Desktop with Kubernetes** enabled (if you want to run Kubernetes locally)
+
+---
+
+### 2. **Clone the Repository**
+
+```bash
+git clone https://github.com/yourusername/shieldnet-ai-defender.git
+cd shieldnet-ai-defender
+```
+
+---
+
+### 3. **Set Up Python Virtual Environment**
+
+```bash
+python -m venv .venv
+source .venv/bin/activate      # On Linux/macOS
+.venv\Scripts\activate         # On Windows
+```
+
+---
+
+### 4. **Install Python Dependencies**
+
+```bash
+pip install -r requirements/base.txt
+```
+
+---
+
+### 5. **Run Core Modules Locally**
+
+- For example, to run the **LLM Security Scanner** API locally:
+
+```bash
+cd web
+uvicorn app:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Open your browser and visit `http://127.0.0.1:8000/docs` to access the API Swagger UI.
+
+---
+
+### 6. **Run Docker Containers Locally**
+
+If you want to run the full system or components in Docker containers:
+
+- Build the Docker image:
+
+```bash
+docker build -t shieldnet-ai-defender .
+```
+
+- Run the container:
+
+```bash
+docker run --rm -p 8000:8000 shieldnet-ai-defender
+```
+
+---
+
+### 7. **Optional: Run Kubernetes Locally**
+
+If you want to test Kubernetes deployment locally:
+
+- **Install Minikube**: https://minikube.sigs.k8s.io/docs/start/
+- Start Minikube:
+
+```bash
+minikube start
+```
+
+- Apply Kubernetes manifests:
+
+```bash
+kubectl apply -f kubernetes/
+```
+
+- Access services via port-forward or Minikube tunnel.
+
+---
+
+### 8. **Testing and Validation**
+
+- Run unit and integration tests:
+
+```bash
+pytest tests/ -v
+```
+
+- Run chaos engineering tests locally:
+
+```bash
+python tests/chaos_engineering.py
+```
+
+---
+
+### 9. **Local Threat Intelligence Integration**
+
+- For MISP integration, you can run a local MISP instance using Docker:
+
+```bash
+docker run -d -p 8080:80 harvarditsecurity/misp
+```
+
+- Update your `configs/misp_credentials.json` to point to `http://localhost:8080` and use appropriate API keys.
+
+---
+
+### 10. **Logging and Monitoring**
+
+- Logs will be output to your console or log files depending on configuration.
+- For monitoring, you can run Prometheus and Grafana locally using Docker Compose:
+
+```bash
+docker-compose -f monitoring/docker-compose.yml up -d
+```
+
+---
+
+## Summary
+
+| Step                       | Command / Action                          |
+|----------------------------|-----------------------------------------|
+| Clone repo                 | `git clone ...`                         |
+| Setup Python environment    | `python -m venv .venv` + activate      |
+| Install dependencies        | `pip install -r requirements/base.txt` |
+| Run API locally             | `uvicorn web.app:app --reload`          |
+| Build Docker image          | `docker build -t shieldnet-ai-defender .` |
+| Run Docker container        | `docker run -p 8000:8000 shieldnet-ai-defender` |
+| (Optional) Start Minikube   | `minikube start`                        |
+| (Optional) Deploy K8s       | `kubectl apply -f kubernetes/`          |
+| Run tests                  | `pytest tests/`                         |
+
+---
+
+## Notes
+
+- Some confidential computing features (Intel SGX enclaves) require specific hardware and cannot be fully emulated locally.
+- For full quantum-safe encryption and blockchain audit features, you can simulate or mock components during local development.
+- Local MISP and monitoring stacks help you test threat intelligence ingestion and alerting.
+
+---
+
+If you want, I can help you with detailed commands or scripts to automate this local setup! Would you like that?
+
+---

@@ -1,0 +1,70 @@
+# Core Dependencies
+fastapi==0.103.2
+uvicorn==0.23.2
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Security & Cryptography
+cryptography==41.0.4
+pyopenssl==23.3.0
+python-jose==3.3.0
+passlib==1.7.4
+bcrypt==4.0.1
+pycryptodome==3.20.0
+
+# Machine Learning Protection
+tensorflow==2.14.0
+adversarial-robustness-toolbox==1.16.1
+cleverhans==4.0.0
+gensim==4.3.2
+spacy==3.7.2
+en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.7.0/en_core_web_lg-3.7.0-py3-none-any.whl
+
+# Monitoring & Observability
+prometheus-client==0.17.1
+elasticsearch==8.10.1
+grafana-client==3.1.1
+falco-client==0.7.1
+
+# Kubernetes & Cloud
+kubernetes==26.1.0
+docker==6.1.3
+requests==2.31.0
+httpx==0.25.0
+
+# Utilities
+python-dateutil==2.8.2
+tqdm==4.66.1
+loguru==0.7.2
+orjson==3.9.10
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# Optional (Comment if not needed)
+# For Windows-specific components
+pywin32==306; sys_platform == 'win32'
+wmi==1.5.1; sys_platform == 'win32'
+
+# For blockchain audit components
+web3==6.11.1
+eth-account==0.9.0
+
+# For differential privacy
+tensorflow-privacy==0.8.12
+
+# For quantum-resistant crypto (requires compilation)
+# poetry install crystals-kyber-python (preferred)
+# or use pre-built wheels if available
+
+
+gradio==3.50.2
+prometheus-client==0.17.1
+matplotlib==3.8.0  # For advanced visualizations
+
+
+
+kubernetes==26.1.0
+loguru==0.7.2
+pydantic==2.5.0
+python-dotenv==1.0.0
